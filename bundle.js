@@ -1,83 +1,85 @@
-(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-const rangeSlider = require('../src/index.js')
+(function () { function r (e, n, t) { function o (i, f) { if (!n[i]) { if (!e[i]) { const c = typeof require === 'function' && require; if (!f && c) return c(i, !0); if (u) return u(i, !0); const a = new Error("Cannot find module '" + i + "'"); throw a.code = 'MODULE_NOT_FOUND', a } const p = n[i] = { exports: {} }; e[i][0].call(p.exports, function (r) { const n = e[i][1][r]; return o(n || r) }, p, p.exports, r, e, n, t) } return n[i].exports } for (var u = typeof require === 'function' && require, i = 0; i < t.length; i++)o(t[i]); return o } return r })()({
+  1: [function (require, module, exports) {
+    const rangeSlider = require('..')
 
-const range = rangeSlider({ min:0, max:10 })
+    const range = rangeSlider({ min: 0, max: 10 })
 
-document.body.innerHTML = `
+    document.body.innerHTML = `
     <h1> Range Slider </h1>
 `
 
-const main = document.createElement('div')
-main.classList.add('demo')
+    const main = document.createElement('div')
+    main.classList.add('demo')
 
-const style = document.createElement('style')
-style.textContent = `
+    const style = document.createElement('style')
+    style.textContent = `
     .demo {
         padding: 50px;
     }
 `
-main.append(style, range)
+    main.append(style, range)
 
-document.body.append(main)
+    document.body.append(main)
+  }, { '..': 2 }],
+  2: [function (require, module, exports) {
+    module.exports = rangeSlider
 
-},{"../src/index.js":2}],2:[function(require,module,exports){
-module.exports = rangeSlider
+    let id = 0
 
-var id = 0
+    function rangeSlider (opts, protocol) {
+      const name = `range-${id++}`
+      const { min = 1, max = 5 } = opts
 
-function rangeSlider(opts, protocol) {
-    const name = `range-${id++}`
-    const { min=1, max=5} = opts
+      const el = document.createElement('div')
+      el.classList.add('container')
 
-    const el = document.createElement('div') 
-    el.classList.add('container')
+      const shadow = el.attachShadow({ mode: 'closed' })
 
-    const shadow = el.attachShadow({ mode: 'closed' })
-    
-    input = document.createElement('input')
-    input.type = 'range'
-    input.min = min
-    input.max = max
-    input.value = min
+      input = document.createElement('input')
+      input.type = 'range'
+      input.min = min
+      input.max = max
+      input.value = min
 
-    input.oninput = handle_input
+      input.oninput = handle_input
 
-    notify = protocol({ from:name }, listen)
-    function listen (message) {
+      if (protocol) {
+        notify = protocol({ from: name }, listen)
+      }
+      function listen (message) {
         const { type, body } = message
         if (type == 'update') input.value = body
-        fill.style.width = `${(body/max) * 100}%`
+        fill.style.width = `${(body / max) * 100}%`
         input.focus()
-    }
+      }
 
-    bar = document.createElement('div')
-    bar.classList.add('bar')
+      bar = document.createElement('div')
+      bar.classList.add('bar')
 
-    
-    ruler = document.createElement('div')
-    ruler.classList.add('ruler')
+      ruler = document.createElement('div')
+      ruler.classList.add('ruler')
 
-    fill = document.createElement('div')
-    fill.classList.add('fill')
+      fill = document.createElement('div')
+      fill.classList.add('fill')
 
-    bar.append(ruler, fill)
+      bar.append(ruler, fill)
 
-    style = document.createElement('style')
-    style.textContent = get_theme()
+      style = document.createElement('style')
+      style.textContent = get_theme()
 
-    shadow.append(style, input, bar)
-    return el
+      shadow.append(style, input, bar)
+      return el
 
-    // handlers
-    function handle_input(e) {
+      // handlers
+      function handle_input (e) {
         const val = Number(e.target.value)
-        fill.style.width = `${(val/max) * 100}%`
-        notify({ from:name, type:'update', body: val})
+        fill.style.width = `${(val / max) * 100}%`
+        notify({ from: name, type: 'update', body: val })
+      }
     }
-}
 
-function get_theme() {
-    return `
+    function get_theme () {
+      return `
         :host { box-sizing: border-box; }
         *, *:before, *:after { box-sizing: inherit; }
         :host {
@@ -170,6 +172,6 @@ function get_theme() {
         }
 
     `
-}
-
-},{}]},{},[1]);
+    }
+  }, {}]
+}, {}, [1])
